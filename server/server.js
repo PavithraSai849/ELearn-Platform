@@ -5,9 +5,20 @@ const mediaRoutes = require("./routes");
 
 const app = express();
 
+// Allow multiple origins for CORS
+const allowedOrigins = [
+  process.env.CLIENT_URL, "https://e-learn-platform-a2yv.vercel.app/", "http://localhost:5173", "http://localhost:5173"
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -15,10 +26,8 @@ app.use(
 
 app.use(express.json());
 
-// Routes configuration
 app.use("/media", mediaRoutes);
 
-// Error handler
 app.use((err, req, res, next) => {
   console.log(err.stack);
   res.status(500).json({
@@ -27,5 +36,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Export the app as a module for Vercel
 module.exports = app;
