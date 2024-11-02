@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://e-learn-platform.vercel.app",
+  baseURL: "https://server-e-learn.vercel.app",
 });
 
 axiosInstance.interceptors.request.use(
