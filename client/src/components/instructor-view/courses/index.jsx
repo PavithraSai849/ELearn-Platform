@@ -60,7 +60,6 @@ function InstructorCourses({ listOfCourses }) {
             <TableHeader>
               <TableRow>
                 <TableHead>Course</TableHead>
-                <TableHead>Students</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -71,7 +70,6 @@ function InstructorCourses({ listOfCourses }) {
                       <TableCell className="font-medium">
                         {course?.title}
                       </TableCell>
-                      <TableCell>{course?.students?.length}</TableCell>
                       <TableCell className="text-right">
                       <Button
                           onClick={() => {
