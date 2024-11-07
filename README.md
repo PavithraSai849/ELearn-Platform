@@ -15,6 +15,9 @@ The platform focuses on providing accessible, interactive, and customizable educ
 
 ![image](https://github.com/user-attachments/assets/1f645263-7e2c-40bd-bbf7-ae5319caf289)
 
+![image](https://github.com/user-attachments/assets/2a84f554-f4ad-40b6-98cc-e310a680a640)
+
+
 Contributions are welcome! Please fork the repository and create a pull request with your changes.
 
 
