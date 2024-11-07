@@ -9,9 +9,13 @@ The platform focuses on providing accessible, interactive, and customizable educ
 
 ![image](https://github.com/user-attachments/assets/804fae58-e481-4fc6-87b6-6e6a08f45b70)
 
-![image](https://github.com/user-attachments/assets/11c35a4a-7b55-4d87-98c2-f69ba8f9b1a3)
+![image](https://github.com/user-attachments/assets/164efe56-3f09-4497-97ad-ec9f639b570c)
 
 ![image](https://github.com/user-attachments/assets/6b33ae1b-2743-49b3-bae2-9d9323fc5efd)
+
+![image](https://github.com/user-attachments/assets/1f645263-7e2c-40bd-bbf7-ae5319caf289)
+
+Contributions are welcome! Please fork the repository and create a pull request with your changes.
 
 
 
