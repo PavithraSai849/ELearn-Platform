@@ -53,7 +53,7 @@ function StudentViewCoursesPage() {
     setFilters((prevFilters) => {
       const updatedFilters = { ...prevFilters };
       const currentOptions = updatedFilters[getSectionId] || [];
-  
+
       if (currentOptions.includes(getCurrentOption.id)) {
         updatedFilters[getSectionId] = currentOptions.filter(
           (id) => id !== getCurrentOption.id
@@ -61,16 +61,16 @@ function StudentViewCoursesPage() {
       } else {
         updatedFilters[getSectionId] = [...currentOptions, getCurrentOption.id];
       }
-  
+
       // Check if filters actually changed before setting in session storage
       if (JSON.stringify(updatedFilters) !== JSON.stringify(prevFilters)) {
         sessionStorage.setItem("filters", JSON.stringify(updatedFilters));
       }
-  
+
       return updatedFilters;
     });
   }
-  
+
   async function fetchAllStudentViewCourses(filters, sort) {
     const query = new URLSearchParams({
       ...filters,
@@ -84,7 +84,7 @@ function StudentViewCoursesPage() {
   }
 
   async function handleCourseNavigate(getCurrentCourseId) {
-      navigate(`/course/details/${getCurrentCourseId}`);
+    navigate(`/course/details/${getCurrentCourseId}`);
   }
 
   useEffect(() => {
@@ -123,12 +123,19 @@ function StudentViewCoursesPage() {
                 <h3 className="font-bold mb-3">{ketItem.toUpperCase()}</h3>
                 <div className="grid gap-2 mt-2">
                   {filterOptions[ketItem].map((option) => (
-                    <Label key={option.id} className="flex font-medium items-center gap-3">
+                    <Label
+                      key={option.id}
+                      className="flex font-medium items-center gap-3"
+                    >
                       <Checkbox
                         checked={
-                          filters[ketItem] && filters[ketItem].includes(option.id)
+                          filters[ketItem] &&
+                          filters[ketItem].includes(option.id)
                         }
-                        onCheckedChange={() => handleFilterOnChange(ketItem, option)}
+                        onCheckedChange={() =>
+                          handleFilterOnChange(ketItem, option)
+                        }
+                        aria-label={option.label}
                       />
                       {option.label}
                     </Label>
@@ -142,7 +149,11 @@ function StudentViewCoursesPage() {
           <div className="flex justify-end items-center mb-4 gap-5">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="flex items-center gap-2 p-5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 p-5"
+                >
                   <ArrowUpDownIcon className="h-4 w-4" />
                   <span className="text-[16px] font-medium">Sort By</span>
                 </Button>
@@ -150,7 +161,10 @@ function StudentViewCoursesPage() {
               <DropdownMenuContent align="end" className="w-[180px]">
                 <DropdownMenuRadioGroup value={sort} onValueChange={setSort}>
                   {sortOptions.map((sortItem) => (
-                    <DropdownMenuRadioItem value={sortItem.id} key={sortItem.id}>
+                    <DropdownMenuRadioItem
+                      value={sortItem.id}
+                      key={sortItem.id}
+                    >
                       {sortItem.label}
                     </DropdownMenuRadioItem>
                   ))}
@@ -173,16 +187,27 @@ function StudentViewCoursesPage() {
                 >
                   <CardContent className="flex gap-4 p-4">
                     <div className="w-48 h-32 flex-shrink-0">
-                      <img src={courseItem.image} alt="" className="w-full h-full object-cover" />
+                      <img
+                        src={courseItem.image}
+                        alt={courseItem.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="flex-1">
-                      <CardTitle className="text-xl mb-2">{courseItem.title}</CardTitle>
+                      <CardTitle className="text-xl mb-2">
+                        {courseItem.title}
+                      </CardTitle>
                       <p className="text-sm text-gray-600 mb-1">
-                        Created By <span className="font-bold">{courseItem.instructorName}</span>
+                        Created By{" "}
+                        <span className="font-bold">
+                          {courseItem.instructorName}
+                        </span>
                       </p>
                       <p className="text-[16px] text-gray-600 mt-3 mb-2">
                         {`${courseItem.curriculum.length} ${
-                          courseItem.curriculum.length <= 1 ? "Lecture" : "Lectures"
+                          courseItem.curriculum.length <= 1
+                            ? "Lecture"
+                            : "Lectures"
                         } - ${courseItem.level.toUpperCase()} Level`}
                       </p>
                     </div>
@@ -198,8 +223,5 @@ function StudentViewCoursesPage() {
     </div>
   );
 }
-
-
-
 
 export default StudentViewCoursesPage;

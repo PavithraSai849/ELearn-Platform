@@ -5,17 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useContext, useEffect } from "react";
 import { StudentContext } from "@/context/student-context";
 import FloatingAudioPlayer from "@/FloatingAudioPlayer";
-import {
-  checkCoursePurchaseInfoService,
-  fetchStudentViewAllCourseListService,
-} from "@/services";
-import { AuthContext } from "@/context/auth-context";
+import { fetchStudentViewAllCourseListService } from "@/services";
 import { useNavigate } from "react-router-dom";
 
 function StudentHomePage() {
   const { studentViewCoursesList, setStudentViewCoursesList } =
     useContext(StudentContext);
-  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
 
   function handleNavigateToCoursesPage(getCurrentId) {
@@ -46,11 +41,11 @@ function StudentHomePage() {
 
     // if (response?.success) {
     //   if (response?.data) {
-        // navigate(`/course-progress/${getCurrentCourseId}`);
-      // } else {
-      console.log(getCurrentCourseId)
-      navigate(`/course/details/${getCurrentCourseId}`);
-      // }
+    // navigate(`/course-progress/${getCurrentCourseId}`);
+    // } else {
+    console.log(getCurrentCourseId);
+    navigate(`/course/details/${getCurrentCourseId}`);
+    // }
     // }
   }
 
@@ -73,6 +68,7 @@ function StudentHomePage() {
             src={banner}
             width={600}
             height={400}
+            alt={banner}
             className="w-full h-auto rounded-lg shadow-lg"
           />
         </div>
@@ -96,13 +92,15 @@ function StudentHomePage() {
         <h2 className="text-2xl font-bold mb-6">All Courses</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {studentViewCoursesList && studentViewCoursesList.length > 0 ? (
-            studentViewCoursesList.map((courseItem) => (
+            studentViewCoursesList.map((courseItem, index) => (
               <div
+                key={index}
                 onClick={() => handleCourseNavigate(courseItem?.id)}
                 className="border rounded-lg overflow-hidden shadow cursor-pointer"
               >
                 <img
                   src={courseItem?.image}
+                  alt={courseItem?.title}
                   width={300}
                   height={150}
                   className="w-full h-40 object-cover"

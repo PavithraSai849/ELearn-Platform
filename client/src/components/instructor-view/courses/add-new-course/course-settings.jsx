@@ -60,7 +60,7 @@ function CourseSettings() {
 
     try {
       console.log("Starting upload for:", file.name);
-      
+
       const response = await documentUploadService(formData, (progress) => {
         setNotesUploadProgress(progress);
       });
@@ -83,10 +83,14 @@ function CourseSettings() {
     }
   }
 
-  const previewUrl = courseLandingFormData?.notes.replace('/upload/', '/upload/fl_attachment/');
+  const previewUrl = courseLandingFormData?.notes.replace(
+    "/upload/",
+    "/upload/fl_attachment/"
+  );
 
-  const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(previewUrl)}&embedded=true`;
-
+  const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(
+    previewUrl
+  )}&embedded=true`;
 
   return (
     <Card>
@@ -102,43 +106,59 @@ function CourseSettings() {
         ) : null}
       </div>
       <CardContent>
+        {/* Course Image Upload Section */}
         {courseLandingFormData?.image ? (
-          <img src={courseLandingFormData.image} alt="Course" />
+          <div className="flex flex-col gap-3">
+            <h4 className="font-semibold">Course Image</h4>
+            <img src={courseLandingFormData.image} alt="Course" />
+          </div>
         ) : (
           <div className="flex flex-col gap-3">
-            <Label>Upload Course Image</Label>
+            <Label htmlFor="courseImage">Upload Course Image</Label>
             <Input
               onChange={handleImageUploadChange}
               type="file"
               accept="image/*"
+              id="courseImage"
             />
           </div>
         )}
-</CardContent>
-        <CardContent>
-  {courseLandingFormData?.notes ? (
-    <>
-    <h4 className="font-semibold">Notes</h4>
-    <iframe
-      src={googleViewerUrl}
-      title="Course Notes Preview"
-      width="100%"
-      height="600px"
-      style={{ border: "none" }}
-    ></iframe>
-    </>
-  ) : (
-    <div className="mt-6">
-    <h4 className="font-semibold">Upload Notes</h4>
-    <Input
-      type="file"
-      accept=".pdf, .txt"
-      onChange={handleNotesUpload}
-      className="mb-4"
-    />
-  </div>
-  )}
-        
+      </CardContent>
+
+      <CardContent>
+        {/* Notes Upload Section */}
+        {courseLandingFormData?.notes ? (
+          <div className="flex flex-col gap-3">
+            <h4 className="font-semibold">Notes</h4>
+            <iframe
+              src={googleViewerUrl}
+              title="Course Notes Preview"
+              width="100%"
+              height="600px"
+              style={{ border: "none" }}
+            ></iframe>
+          </div>
+        ) : (
+          <div className="mt-6">
+            <h4 className="font-semibold">Upload Notes</h4>
+            <Label htmlFor="courseNotes">Choose PDF or TXT File</Label>
+            <Input
+              type="file"
+              accept=".pdf, .txt"
+              onChange={handleNotesUpload}
+              className="mb-4"
+              id="courseNotes"
+            />
+            {notesUploadProgress > 0 && (
+              <div className="w-full mt-2">
+                <MediaProgressbar
+                  isMediaUploading={notesUploadProgress > 0}
+                  progress={notesUploadProgress}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

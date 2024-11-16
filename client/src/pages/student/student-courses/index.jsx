@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { getStudentCartCourses } from "@/services";  // Import your function here
+import { getStudentCartCourses } from "@/services"; // Import your function here
 import { Watch } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,11 +9,11 @@ import { doc, getDoc } from "firebase/firestore";
 import FloatingAudioPlayer from "@/FloatingAudioPlayer";
 
 function StudentCoursesPage() {
-  const [studentBoughtCoursesList, setStudentBoughtCoursesList] = useState([]);  // Local state to store courses
+  const [studentBoughtCoursesList, setStudentBoughtCoursesList] = useState([]); // Local state to store courses
   const navigate = useNavigate();
 
   async function fetchStudentBoughtCourses() {
-    const response = await getStudentCartCourses(auth.currentUser.uid);  // Call the new function
+    const response = await getStudentCartCourses(auth.currentUser.uid); // Call the new function
     if (response?.success) {
       const courseIds = response.data.map((item) => item.courseId);
 
@@ -22,14 +22,16 @@ function StudentCoursesPage() {
         courseIds.map(async (courseId) => {
           const courseDocRef = doc(db, "courses", courseId);
           const courseDoc = await getDoc(courseDocRef);
-          return courseDoc.exists() ? { id: courseDoc.id, ...courseDoc.data() } : null;
+          return courseDoc.exists()
+            ? { id: courseDoc.id, ...courseDoc.data() }
+            : null;
         })
       );
 
       // Filter out any null entries in case some course documents do not exist
       const validCourses = courseDetails.filter((course) => course !== null);
 
-      setStudentBoughtCoursesList(validCourses);  // Update the local state with full course data
+      setStudentBoughtCoursesList(validCourses); // Update the local state with full course data
     }
   }
 
@@ -62,9 +64,7 @@ function StudentCoursesPage() {
                 <Button
                   onClick={() =>
                     // navigate(`/course-progress/${course?.id}`
-                    navigate(`/course/details/${course?.id}`
-
-                    )
+                    navigate(`/course/details/${course?.id}`)
                   }
                   className="flex-1"
                 >

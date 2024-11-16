@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const mediaRoutes = require("./routes");
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 

@@ -17,7 +17,10 @@ import { color } from "framer-motion";
 import { Delete, Edit, FileStack } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { deleteCourseService, fetchInstructorCourseListService } from "@/services";
+import {
+  deleteCourseService,
+  fetchInstructorCourseListService,
+} from "@/services";
 
 function InstructorCourses() {
   const navigate = useNavigate();
@@ -52,6 +55,7 @@ function InstructorCourses() {
       <CardHeader className="flex justify-between flex-row items-center">
         <CardTitle className="text-3xl font-extrabold">All Courses</CardTitle>
         <Button
+          aria-label="Create a new course"
           onClick={() => {
             setCurrentEditedCourseId(null);
             setCourseLandingFormData(courseLandingInitialFormData);
@@ -59,7 +63,7 @@ function InstructorCourses() {
             navigate("/instructor/create-new-course");
           }}
           className="p-6"
-          style={{backgroundColor:"#5800A3"}}
+          style={{ backgroundColor: "#5800A3" }}
         >
           Create New Course
         </Button>
@@ -75,36 +79,44 @@ function InstructorCourses() {
             </TableHeader>
             <TableBody>
               {listOfCourses && listOfCourses.length > 0
-                ? listOfCourses.map((course) => (
-                    <TableRow>
+                ? listOfCourses.map((course, index) => (
+                    <TableRow key={index}>
                       <TableCell className="font-medium">
                         {course?.title}
                       </TableCell>
                       <TableCell className="text-right">
-                      <Button
+                        <Button
+                          aria-label="Add to this course"
                           onClick={() => {
-                            navigate(`/instructor/course-assignment/${course?.id}`);
+                            navigate(
+                              `/instructor/course-assignment/${course?.id}`
+                            );
                           }}
                           variant="ghost"
                           size="sm"
                         >
-                          <FileStack className="h-6 w-6" />
+                          Add
+                          <FileStack className="h-6 w-6 ms-2" />
                         </Button>
                         <Button
+                          aria-label="Edit this course"
                           onClick={() => {
                             navigate(`/instructor/edit-course/${course?.id}`);
                           }}
                           variant="ghost"
                           size="sm"
                         >
-                          <Edit className="h-6 w-6" />
+                          Edit
+                          <Edit className="h-6 w-6 ms-2" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
+                          aria-label="Delete this course"
                           onClick={() => handleDeleteCourse(course?.id)} // Call delete function
                         >
-                          <Delete className="h-6 w-6" />
+                          Delete
+                          <Delete className="h-6 w-6 ms-2" />
                         </Button>
                       </TableCell>
                     </TableRow>

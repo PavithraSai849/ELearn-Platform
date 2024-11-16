@@ -200,6 +200,9 @@ function CourseCurriculum() {
             id="bulk-media-upload"
             onChange={handleMediaBulkUpload}
           />
+          <Label htmlFor="bulk-media-upload" className="sr-only">
+            Bulk Media Upload
+          </Label>
           <Button
             as="label"
             htmlFor="bulk-media-upload"
@@ -216,7 +219,7 @@ function CourseCurriculum() {
         <Button
           disabled={!isCourseCurriculumFormDataValid() || mediaUploadProgress}
           onClick={handleNewLecture}
-          style={{backgroundColor:"#F14E87"}}
+          style={{ backgroundColor: "#F14E87" }}
         >
           Add Lecture
         </Button>
@@ -228,16 +231,22 @@ function CourseCurriculum() {
         ) : null}
         <div className="mt-4 space-y-4">
           {courseCurriculumFormData.map((curriculumItem, index) => (
-            <div className="border p-5 rounded-md">
+            <div className="border p-5 rounded-md" key={index}>
               <div className="flex gap-5 items-center">
                 <h3 className="font-semibold">Lecture {index + 1}</h3>
-                <Input
-                  name={`title-${index + 1}`}
-                  placeholder="Enter lecture title"
-                  className="max-w-96"
-                  onChange={(event) => handleCourseTitleChange(event, index)}
-                  value={courseCurriculumFormData[index]?.title}
-                />
+                <div>
+                  <Label htmlFor={`title-${index + 1}`} className="sr-only">
+                    Lecture Title
+                  </Label>
+                  <Input
+                    id={`title-${index + 1}`}
+                    name={`title-${index + 1}`}
+                    placeholder="Enter lecture title"
+                    className="max-w-96"
+                    onChange={(event) => handleCourseTitleChange(event, index)}
+                    value={courseCurriculumFormData[index]?.title}
+                  />
+                </div>
                 <div className="flex items-center space-x-2">
                   <Switch
                     onCheckedChange={(value) =>
@@ -245,6 +254,7 @@ function CourseCurriculum() {
                     }
                     checked={courseCurriculumFormData[index]?.freePreview}
                     id={`freePreview-${index + 1}`}
+                    aria-label="Free Preview"
                   />
                   <Label htmlFor={`freePreview-${index + 1}`}>
                     Free Preview
@@ -270,14 +280,24 @@ function CourseCurriculum() {
                     </Button>
                   </div>
                 ) : (
-                  <Input
-                    type="file"
-                    accept="video/*"
-                    onChange={(event) =>
-                      handleSingleLectureUpload(event, index)
-                    }
-                    className="mb-4"
-                  />
+                  <>
+                    <Input
+                      id={`video-upload-${index}`}
+                      type="file"
+                      accept="video/*"
+                      onChange={(event) =>
+                        handleSingleLectureUpload(event, index)
+                      }
+                      label="Upload Video"
+                      className="mb-4"
+                    />
+                    <Label
+                      htmlFor={`video-upload-${index}`}
+                      className="sr-only"
+                    >
+                      Upload Video
+                    </Label>
+                  </>
                 )}
               </div>
             </div>

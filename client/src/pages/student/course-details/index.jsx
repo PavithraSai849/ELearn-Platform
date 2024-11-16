@@ -38,7 +38,8 @@ function StudentViewCourseDetailsPage() {
 
   const params = useParams();
   const location = useLocation();
-  const [displayCurrentVideoFreePreview, setDisplayCurrentVideoFreePreview] = useState(null);
+  const [displayCurrentVideoFreePreview, setDisplayCurrentVideoFreePreview] =
+    useState(null);
   const [showFreePreviewDialog, setShowFreePreviewDialog] = useState(false);
   const [approvalUrl, setApprovalUrl] = useState("");
   const [assignments, setAssignments] = useState([]);
@@ -89,7 +90,10 @@ function StudentViewCourseDetailsPage() {
     const currentUser = auth.currentUser;
     if (currentUser && params.id) {
       const userId = currentUser.uid;
-      const fetchedSubmissions = await getSubmissionsByUserAndCourse(userId, params.id);
+      const fetchedSubmissions = await getSubmissionsByUserAndCourse(
+        userId,
+        params.id
+      );
       setSubmissions(fetchedSubmissions);
       console.log(fetchedSubmissions);
     }
@@ -97,21 +101,24 @@ function StudentViewCourseDetailsPage() {
 
   const fetchAssignments = async () => {
     setAssignmentVisible(true);
-    const currentUser = auth.currentUser; 
+    const currentUser = auth.currentUser;
     if (currentUser && params.id) {
       const userId = currentUser.uid;
-      const fetchedAssignments = await getAssignmentsByUserAndCourse(userId, params.id);
-      setAssignments(fetchedAssignments); 
-      console.log(fetchedAssignments); 
-      await fetchSubmissions(); 
-      setReplaceNotes(Array(fetchedAssignments.length).fill(false)); 
+      const fetchedAssignments = await getAssignmentsByUserAndCourse(
+        userId,
+        params.id
+      );
+      setAssignments(fetchedAssignments);
+      console.log(fetchedAssignments);
+      await fetchSubmissions();
+      setReplaceNotes(Array(fetchedAssignments.length).fill(false));
     }
   };
 
   const uploadDocument = async (file, index) => {
     const formData = new FormData();
     formData.append("file", file);
-  
+
     // Define a progress callback that updates the progress for the specific file by index
     const onProgress = (percentCompleted) => {
       setPercentCompleted((prevProgress) => {
@@ -120,7 +127,7 @@ function StudentViewCourseDetailsPage() {
         return updatedProgress;
       });
     };
-  
+
     try {
       const uploadResponse = await documentUploadService(formData, onProgress);
       if (!uploadResponse.success) {
@@ -130,8 +137,7 @@ function StudentViewCourseDetailsPage() {
     } catch (error) {
       console.error("File upload failed:", error.message);
       return null;
-    }
-    finally{
+    } finally {
       setPercentCompleted((prevProgress) => {
         const updatedProgress = [...prevProgress];
         updatedProgress[index] = 0;
@@ -139,9 +145,7 @@ function StudentViewCourseDetailsPage() {
       });
     }
   };
-  
-  
-  
+
   const handleSaveSubmissions = async (submissionData) => {
     try {
       const response = await saveSubmissionToFirestore(submissionData);
@@ -153,9 +157,6 @@ function StudentViewCourseDetailsPage() {
       console.error("Failed to save submission:", error.message);
     }
   };
-  
-
-  
 
   useEffect(() => {
     if (displayCurrentVideoFreePreview) setShowFreePreviewDialog(true);
@@ -181,28 +182,35 @@ function StudentViewCourseDetailsPage() {
     window.location.href = approvalUrl;
   }
 
-  const previewUrlNotes = studentViewCourseDetails?.notes.replace('/upload/', '/upload/fl_attachment/');
-  const googleViewerUrlNotes = `https://docs.google.com/viewer?url=${encodeURIComponent(previewUrlNotes)}&embedded=true`;
+  const previewUrlNotes = studentViewCourseDetails?.notes.replace(
+    "/upload/",
+    "/upload/fl_attachment/"
+  );
+  const googleViewerUrlNotes = `https://docs.google.com/viewer?url=${encodeURIComponent(
+    previewUrlNotes
+  )}&embedded=true`;
 
   const previewUrl = (url) => url.replace("/upload/", "/upload/fl_attachment/");
 
-  const getIndexOfFreePreviewUrl = studentViewCourseDetails?.curriculum?.findIndex(
-    (item) => item.freePreview
-  );
+  const getIndexOfFreePreviewUrl =
+    studentViewCourseDetails?.curriculum?.findIndex((item) => item.freePreview);
 
   const handleReplaceNotes = (index) => {
     setReplaceNotes((prev) => {
       const newReplaceNotes = [...prev];
-      newReplaceNotes[index] = !newReplaceNotes[index]; 
+      newReplaceNotes[index] = !newReplaceNotes[index];
       return newReplaceNotes;
     });
   };
 
   return (
     <div className="mx-auto p-4">
-      {assignmentVisible ? <FloatingAudioPlayer audioSrc="/assignments.mp3" /> :
-      <FloatingAudioPlayer audioSrc="/detailedview.mp3" /> }
-      
+      {assignmentVisible ? (
+        <FloatingAudioPlayer audioSrc="/assignments.mp3" />
+      ) : (
+        <FloatingAudioPlayer audioSrc="/detailedview.mp3" />
+      )}
+
       <div className="bg-gray-900 text-white p-8 rounded-t-lg">
         <h1 className="text-3xl font-bold mb-4">
           {studentViewCourseDetails?.title}
@@ -213,7 +221,11 @@ function StudentViewCourseDetailsPage() {
             <Globe className="mr-1 h-4 w-4" />
             {studentViewCourseDetails?.primaryLanguage}
           </span>
-          <Button style={{backgroundColor:"#E86391"}} onClick={fetchAssignments}>
+          <Button
+            style={{ backgroundColor: "#E86391" }}
+            onClick={fetchAssignments}
+            className="text-black"
+          >
             Assignments
           </Button>
         </div>
@@ -222,79 +234,106 @@ function StudentViewCourseDetailsPage() {
       {assignmentVisible ? (
         assignments.length > 0 ? (
           assignments.map((assignment, index) => {
-            const submission = submissions.find(sub => sub.assignmentId === assignment.id);
+            const submission = submissions.find(
+              (sub) => sub.assignmentId === assignment.id
+            );
             return (
               <>
-              <div className="flex justify-between mt-5 mb-5">
-                <h1 className="text-3xl font-semibold">{studentViewCourseDetails?.title} Assignments </h1>
-              <Button className="justify-end mt-2" style={{ backgroundColor: "#5800A3" }} onClick={handleSaveSubmissions}>Save Submissions</Button>
-              </div>
-              <Card key={assignment.id} className="mb-8">
-                <CardHeader className="border p-5 rounded-md m-4">
-                  <CardTitle>Assignment - {assignment.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="border p-5 rounded-md m-4">
-                  <h4 className="font-semibold">Assignment Document</h4>
-                  <iframe
-                    src={`https://docs.google.com/viewer?url=${encodeURIComponent(previewUrl(assignment.notesUrl))}&embedded=true`}
-                    title="Assignment Preview"
-                    width="100%"
-                    height="200px"
-                    style={{ border: "none" }}
-                  ></iframe>
-                  <div className="flex justify-end mt-2">
-                    <Button>
-                      <a href={assignment.notesUrl}>Download</a>
-                    </Button>
-                  </div>
-                </CardContent>
-                <CardContent className="border p-5 rounded-md m-4">
-                  {submission && (
-                    <>
-                    <div className="flex gap-2 mb-4">
-                      <h4 className="font-semibold">Previous Submission:</h4>
-                      <p className="font-semibold">Submitted at: {new Date(submission.submittedAt.seconds * 1000).toLocaleDateString()}</p>
+                <div className="flex justify-between mt-5 mb-5">
+                  <h1 className="text-3xl font-semibold">
+                    {studentViewCourseDetails?.title} Assignments{" "}
+                  </h1>
+                  <Button
+                    className="justify-end mt-2"
+                    style={{ backgroundColor: "#5800A3" }}
+                    onClick={handleSaveSubmissions}
+                  >
+                    Save Submissions
+                  </Button>
+                </div>
+                <Card key={assignment.id} className="mb-8">
+                  <CardHeader className="border p-5 rounded-md m-4">
+                    <CardTitle>Assignment - {assignment.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="border p-5 rounded-md m-4">
+                    <h4 className="font-semibold">Assignment Document</h4>
+                    <iframe
+                      src={`https://docs.google.com/viewer?url=${encodeURIComponent(
+                        previewUrl(assignment.notesUrl)
+                      )}&embedded=true`}
+                      title="Assignment Preview"
+                      width="100%"
+                      height="200px"
+                      style={{ border: "none" }}
+                    ></iframe>
+                    <div className="flex justify-end mt-2">
+                      <Button>
+                        <a href={assignment.notesUrl}>Download</a>
+                      </Button>
                     </div>
-                     <Button style={{ backgroundColor: "#5800A3" }}>
-                     <a href={submission.notesUrl} target="_blank" rel="noopener noreferrer">View Submission</a>
-                   </Button>
-                   </>
-                  )}
                   </CardContent>
                   <CardContent className="border p-5 rounded-md m-4">
-                  <div>
-                  <Button onClick={() => handleReplaceNotes(index)}>Submit Assignment</Button>
-                  </div>
-                  {replaceNotes[index] && (
-                    <div className="mt-6">
-                    {(percentCompleted[index] > 0)  ? (
-                      <MediaProgressbar
-                        isMediaUploading={percentCompleted[index] > 0} 
-                        progress={percentCompleted[index]}
-                      />
-                    ) : null}
-                      <h4 className="font-semibold">Upload Assignment</h4>
-                      <Input
-                        type="file"
-                        accept=".pdf, .txt"
-                        onChange={(e) => {
-                          const newFiles = [...files];
-                          newFiles[index] = e.target.files[0];
-                          setFiles(newFiles);
-                        }}
-                        className="mb-4"
-                      />
+                    {submission && (
+                      <>
+                        <div className="flex gap-2 mb-4">
+                          <h4 className="font-semibold">
+                            Previous Submission:
+                          </h4>
+                          <p className="font-semibold">
+                            Submitted at:{" "}
+                            {new Date(
+                              submission.submittedAt.seconds * 1000
+                            ).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Button style={{ backgroundColor: "#5800A3" }}>
+                          <a
+                            href={submission.notesUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View Submission
+                          </a>
+                        </Button>
+                      </>
+                    )}
+                  </CardContent>
+                  <CardContent className="border p-5 rounded-md m-4">
+                    <div>
+                      <Button onClick={() => handleReplaceNotes(index)}>
+                        Submit Assignment
+                      </Button>
                     </div>
-                  )}
-              <Button
-  className="justify-end mt-2"
-  style={{ backgroundColor: "#5800A3" }}
-  onClick={() => uploadDocument(files[index], index)}
->
-  Finished
-</Button>
-                </CardContent>
-              </Card>
+                    {replaceNotes[index] && (
+                      <div className="mt-6">
+                        {percentCompleted[index] > 0 ? (
+                          <MediaProgressbar
+                            isMediaUploading={percentCompleted[index] > 0}
+                            progress={percentCompleted[index]}
+                          />
+                        ) : null}
+                        <h4 className="font-semibold">Upload Assignment</h4>
+                        <Input
+                          type="file"
+                          accept=".pdf, .txt"
+                          onChange={(e) => {
+                            const newFiles = [...files];
+                            newFiles[index] = e.target.files[0];
+                            setFiles(newFiles);
+                          }}
+                          className="mb-4"
+                        />
+                      </div>
+                    )}
+                    <Button
+                      className="justify-end mt-2"
+                      style={{ backgroundColor: "#5800A3" }}
+                      onClick={() => uploadDocument(files[index], index)}
+                    >
+                      Finished
+                    </Button>
+                  </CardContent>
+                </Card>
               </>
             );
           })
@@ -303,89 +342,91 @@ function StudentViewCourseDetailsPage() {
         )
       ) : (
         <div className="flex flex-col md:flex-row gap-8 mt-8">
-        <main className="flex-grow">
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>What you'll learn</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {studentViewCourseDetails?.objectives
-                  .split(",")
-                  .map((objective, index) => (
-                    <li key={index} className="flex items-start">
-                      <CheckCircle className="mr-2 h-5 w-5 text-green-500 flex-shrink-0" />
-                      <span>{objective}</span>
-                    </li>
-                  ))}
-              </ul>
-            </CardContent>
-          </Card>
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>Course Description</CardTitle>
-            </CardHeader>
-            <CardContent>{studentViewCourseDetails?.description}</CardContent>
-          </Card>
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>Course Curriculum</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {studentViewCourseDetails?.curriculum?.map(
-                (curriculumItem, index) => (
-                  <li
-                    key={index}
-                    className={"cursor-pointer flex items-center mb-4"}
-                    onClick={() => handleSetFreePreview(curriculumItem)
-                    }
-                  >
-                   
+          <main className="flex-grow">
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>What you'll learn</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {studentViewCourseDetails?.objectives
+                    .split(",")
+                    .map((objective, index) => (
+                      <li key={index} className="flex items-start">
+                        <CheckCircle className="mr-2 h-5 w-5 text-green-500 flex-shrink-0" />
+                        <span>{objective}</span>
+                      </li>
+                    ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Course Description</CardTitle>
+              </CardHeader>
+              <CardContent>{studentViewCourseDetails?.description}</CardContent>
+            </Card>
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Course Curriculum</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {studentViewCourseDetails?.curriculum?.map(
+                  (curriculumItem, index) => (
+                    <li
+                      key={index}
+                      className={"cursor-pointer flex items-center mb-4"}
+                      onClick={() => handleSetFreePreview(curriculumItem)}
+                    >
                       <PlayCircle className="mr-2 h-4 w-4" />
-                  
-                    <span>{curriculumItem?.title}</span>
-                  </li>
-                )
-              )}
-            </CardContent>
-          </Card>
-          <Card>
-          <CardHeader>
-              <CardTitle>Notes Document</CardTitle>
-            </CardHeader>
-          <CardContent>
-              <iframe
-                src={googleViewerUrlNotes}
-                title="Assignment Preview"
-                width="100%"
-                height="200px"
-                style={{ border: "none" }}
-              ></iframe>
-            </CardContent>
-          </Card>
-        </main>
-        <aside className="w-full md:w-[500px]">
-          <Card className="sticky top-4">
-            <CardContent className="p-6">
-              <div className="aspect-video mb-4 rounded-lg flex items-center justify-center">
-                <VideoPlayer
-                  url={studentViewCourseDetails?.curriculum[0].videoUrl}
-                  onProgressUpdate={handleProgressUpdate}
-                  progressData={progressData}
-                  width="450px"
+
+                      <span>{curriculumItem?.title}</span>
+                    </li>
+                  )
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Notes Document</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <iframe
+                  src={googleViewerUrlNotes}
+                  title="Assignment Preview"
+                  width="100%"
                   height="200px"
-                />
-              </div>
-              <Button style={{backgroundColor:"#E86391"}} onClick={handleAddToCart} className="w-full">
-                Add to My Courses
-              </Button>
-            </CardContent>
-          </Card>
-        </aside>
-      </div>
+                  style={{ border: "none" }}
+                ></iframe>
+              </CardContent>
+            </Card>
+          </main>
+          <aside className="w-full md:w-[500px]">
+            <Card className="sticky top-4">
+              <CardContent className="p-6">
+                <div className="aspect-video mb-4 rounded-lg flex items-center justify-center">
+                  <VideoPlayer
+                    url={studentViewCourseDetails?.curriculum[0].videoUrl}
+                    onProgressUpdate={handleProgressUpdate}
+                    progressData={progressData}
+                    width="450px"
+                    height="200px"
+                  />
+                </div>
+                <Button
+                  style={{ backgroundColor: "#E86391" }}
+                  onClick={handleAddToCart}
+                  className="w-full text-black"
+                >
+                  Add to My Courses
+                </Button>
+              </CardContent>
+            </Card>
+          </aside>
+        </div>
       )}
 
-<Dialog
+      <Dialog
         open={showFreePreviewDialog}
         onOpenChange={() => {
           setShowFreePreviewDialog(false);

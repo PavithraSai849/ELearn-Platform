@@ -66,8 +66,8 @@ function AddNewCoursePage() {
     }
 
     return hasFreePreview;
-  } 
-  
+  }
+
   async function handleCreateCourse() {
     const courseFinalFormData = {
       instructorId: auth?.user?.uid, // Use Firebase UID if available
@@ -78,23 +78,25 @@ function AddNewCoursePage() {
       curriculum: courseCurriculumFormData,
       isPublished: true,
     };
-  
+
     const response =
       currentEditedCourseId !== null
-        ? await updateCourseByIdService(currentEditedCourseId, courseFinalFormData)
+        ? await updateCourseByIdService(
+            currentEditedCourseId,
+            courseFinalFormData
+          )
         : await addNewCourseService(courseFinalFormData);
-  
+
     if (response?.success) {
       setCourseLandingFormData(courseLandingInitialFormData);
       setCourseCurriculumFormData(courseCurriculumInitialFormData);
       navigate(-1);
       setCurrentEditedCourseId(null);
     }
-  
+
     console.log(courseFinalFormData, "courseFinalFormData");
   }
 
-  
   async function fetchCurrentCourseDetails() {
     const response = await fetchInstructorCourseDetailsService(
       currentEditedCourseId
@@ -135,7 +137,7 @@ function AddNewCoursePage() {
           disabled={validateFormData()}
           className="text-sm tracking-wider font-bold px-8"
           onClick={handleCreateCourse}
-          style={{backgroundColor:"#5800A3"}}
+          style={{ backgroundColor: "#5800A3" }}
         >
           SUBMIT
         </Button>
@@ -145,11 +147,15 @@ function AddNewCoursePage() {
           <div className="container mx-auto p-4">
             <Tabs defaultValue="curriculum" className="space-y-4">
               <TabsList>
-                <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-                <TabsTrigger value="course-landing-page">
+                <TabsTrigger value="curriculum" className="text-black">
+                  Curriculum
+                </TabsTrigger>
+                <TabsTrigger value="course-landing-page" className="text-black">
                   Course Landing Page
                 </TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
+                <TabsTrigger value="settings" className="text-black">
+                  Settings
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="curriculum">
                 <CourseCurriculum />

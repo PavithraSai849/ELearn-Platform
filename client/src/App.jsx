@@ -16,7 +16,7 @@ import StudentViewCourseProgressPage from "./pages/student/course-progress";
 import DarkModeToggle from "./DarkMode"; // Import DarkModeToggle
 import CourseAssignment from "./components/instructor-view/courses/add-new-course/course-assignment";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'; 
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { authState } = useContext(AuthContext);
@@ -27,88 +27,97 @@ function App() {
         <DarkModeToggle />
       </header>
       <main>
-      <ToastContainer 
-       position="top-center"
-       autoClose={5000}
-       hideProgressBar={false}
-       newestOnTop={false}
-       closeOnClick
-       pauseOnHover 
-       draggable
-       pauseOnFocusLoss
-       theme="light"
-      /> 
-      <Routes>
-        <Route
-          path="/auth"
-          element={
-            <RouteGuard
-              element={<AuthPage />}
-              authenticated={authState?.authenticate}
-              user={authState?.user}
-            />
-          }
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          pauseOnFocusLoss
+          theme="light"
         />
-        <Route
-          path="/instructor"
-          element={
-            <RouteGuard
-              element={<InstructorDashboardpage />}
-              authenticated={authState?.authenticate}
-              user={authState?.user}
+        <Routes>
+          <Route
+            path="/auth"
+            element={
+              <RouteGuard
+                element={<AuthPage />}
+                authenticated={authState?.authenticate}
+                user={authState?.user}
+              />
+            }
+          />
+          <Route
+            path="/instructor"
+            element={
+              <RouteGuard
+                element={<InstructorDashboardpage />}
+                authenticated={authState?.authenticate}
+                user={authState?.user}
+              />
+            }
+          />
+          <Route
+            path="/instructor/create-new-course"
+            element={
+              <RouteGuard
+                element={<AddNewCoursePage />}
+                authenticated={authState?.authenticate}
+                user={authState?.user}
+              />
+            }
+          />
+          <Route
+            path="/instructor/edit-course/:courseId"
+            element={
+              <RouteGuard
+                element={<AddNewCoursePage />}
+                authenticated={authState?.authenticate}
+                user={authState?.user}
+              />
+            }
+          />
+          <Route
+            path="/instructor/course-assignment/:courseId"
+            element={
+              <RouteGuard
+                element={<CourseAssignment />}
+                authenticated={authState?.authenticate}
+                user={authState?.user}
+              />
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <RouteGuard
+                element={<StudentViewCommonLayout />}
+                authenticated={authState?.authenticate}
+                user={authState?.user}
+              />
+            }
+          >
+            <Route path="" element={<StudentHomePage />} />
+            <Route path="home" element={<StudentHomePage />} />
+            <Route path="courses" element={<StudentViewCoursesPage />} />
+            <Route
+              path="course/details/:id"
+              element={<StudentViewCourseDetailsPage />}
             />
-          }
-        />
-        <Route
-          path="/instructor/create-new-course"
-          element={
-            <RouteGuard
-              element={<AddNewCoursePage />}
-              authenticated={authState?.authenticate}
-              user={authState?.user}
+            <Route
+              path="payment-return"
+              element={<PaypalPaymentReturnPage />}
             />
-          }
-        />
-        <Route
-          path="/instructor/edit-course/:courseId"
-          element={
-            <RouteGuard
-              element={<AddNewCoursePage />}
-              authenticated={authState?.authenticate}
-              user={authState?.user}
+            <Route path="student-courses" element={<StudentCoursesPage />} />
+            <Route
+              path="course-progress/:id"
+              element={<StudentViewCourseProgressPage />}
             />
-          }
-        />
-        <Route
-          path="/instructor/course-assignment/:courseId"
-          element={
-            <RouteGuard
-              element={<CourseAssignment />}
-              authenticated={authState?.authenticate}
-              user={authState?.user}
-            />
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <RouteGuard
-              element={<StudentViewCommonLayout />}
-              authenticated={authState?.authenticate}
-              user={authState?.user}
-            />
-          }
-        >
-          <Route path="" element={<StudentHomePage />} />
-          <Route path="home" element={<StudentHomePage />} />
-          <Route path="courses" element={<StudentViewCoursesPage />} />
-          <Route path="course/details/:id" element={<StudentViewCourseDetailsPage />} />
-          <Route path="payment-return" element={<PaypalPaymentReturnPage />} />
-          <Route path="student-courses" element={<StudentCoursesPage />} />
-          <Route path="course-progress/:id" element={<StudentViewCourseProgressPage />} />
-        </Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
       </main>
     </div>
   );
